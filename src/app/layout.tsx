@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: 'Cartas para Helena — um livro de Joaquim Vieira',
   description: 'Memórias de um amor que não termina. Adquira o livro de Joaquim Vieira em edição especial encadernada.',
   authors: [{ name: 'Joaquim Vieira' }],
+  icons: {
+    icon: 'https://s3.typebotstorage.com/public/workspaces/clo2dg2hi0041mj0fephb5rrf/typebots/cmoag4gon000704lastl1gbnq/blocks/q94q8egxt1vj1no3xrg9u6oc?v=1776886827916',
+  },
   openGraph: {
     title: 'Cartas para Helena — um livro de Joaquim Vieira',
     description: 'Memórias de um amor que não termina. Adquira o livro de Joaquim Vieira em edição especial encadernada.',
@@ -15,7 +18,6 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary',
-    site: '@Lovable',
     title: 'Cartas para Helena — um livro de Joaquim Vieira',
     description: 'Memórias de um amor que não termina. Adquira o livro de Joaquim Vieira em edição especial encadernada.',
     images: ['https://storage.googleapis.com/gpt-engineer-file-uploads/Vodq2S2meMUjXev5R1PxOHuAqwq1/social-images/social-1776873327322-Captura_de_tela_2026-04-22_125450.webp'],
