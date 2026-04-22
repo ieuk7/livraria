@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { Book, FileText, Home } from 'lucide-react';
+import { Book, Copy, Home, Link as LinkIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState, useMemo } from 'react';
@@ -15,6 +15,8 @@ import {
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Separator } from '@/components/ui/separator';
 import { OrderForm } from '@/components/order-form-post-purchase';
+import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
 
 type Edition = {
   id: string;
@@ -44,6 +46,13 @@ export default function ThankYouPage() {
   const email = searchParams.get('email') || '';
 
   const [displayUpsell, setDisplayUpsell] = useState(showUpsell);
+  const [accessUrl, setAccessUrl] = useState('');
+  const { toast } = useToast();
+
+  useEffect(() => {
+    setAccessUrl(window.location.href);
+  }, []);
+
 
   const logo = PlaceHolderImages.find((img) => img.id === 'logo');
   const bookCover = PlaceHolderImages.find((img) => img.id === 'book-cover');
@@ -121,6 +130,16 @@ export default function ThankYouPage() {
   const hasReceitas = purchased.includes('receitas');
 
   const upsellAddons = addonsForUpsell.filter(addon => !purchased.includes(addon.id));
+
+  const copyToClipboard = () => {
+    if (accessUrl) {
+      navigator.clipboard.writeText(accessUrl);
+      toast({
+        title: 'Link Copiado!',
+        description: 'Seu link de acesso foi copiado para a área de transferência.',
+      });
+    }
+  };
   
   if (displayUpsell && upsellAddons.length > 0 && email) {
     return (
@@ -189,13 +208,29 @@ export default function ThankYouPage() {
           <p className="mt-4 text-lg text-muted-foreground">
             Acesse seus livros abaixo. Esperamos que você aproveite a leitura.
           </p>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Uma cópia dos seus produtos digitais também foi enviada para o seu
-            e-mail.
-          </p>
         </div>
 
-        <div className="mt-12 space-y-8 lg:mt-16">
+        <Card className="my-12 p-6 text-center">
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                <LinkIcon className="h-6 w-6 text-primary" />
+            </div>
+            <h2 className="text-lg font-semibold text-ink">Seu link de acesso permanente</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+                Salve este link para acessar seus livros a qualquer momento.
+            </p>
+            <div className="mt-4 flex items-center gap-2">
+                <Input
+                    readOnly
+                    value={accessUrl}
+                    className="text-xs text-muted-foreground"
+                />
+                <Button variant="outline" size="icon" onClick={copyToClipboard} aria-label="Copiar link">
+                    <Copy className="h-4 w-4" />
+                </Button>
+            </div>
+        </Card>
+
+        <div className="space-y-8">
           {purchasedItems.map((item, index) => (
             <Card
               key={index}
