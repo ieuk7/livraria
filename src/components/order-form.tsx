@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils';
 import type { ImagePlaceholder } from '@/lib/placeholder-images';
 import { PixModal } from '@/components/pix-modal';
 import { useToast } from '@/hooks/use-toast';
+import { OfferModal } from './offer-modal';
 
 type Edition = {
   id: string;
@@ -54,6 +55,8 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isPixModalOpen, setIsPixModalOpen] = useState(false);
   const [pixData, setPixData] = useState<PixData | null>(null);
+  const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
+  const [offerType, setOfferType] = useState<'none' | 'one_missing' | 'both_missing'>('none');
 
   const { toast } = useToast();
 
@@ -86,22 +89,13 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
 
   const total = subtotal + addonsTotal;
 
-  const handlePurchase = async () => {
-    if (!email || !/\S+@\S+\.\S+/.test(email)) {
-      toast({
-        title: 'E-mail inválido',
-        description: 'Por favor, insira um endereço de e-mail válido.',
-        variant: 'destructive',
-      });
-      return;
-    }
-
+  const proceedToCheckout = async (finalTotal: number) => {
     setIsLoading(true);
     try {
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ total, email }),
+        body: JSON.stringify({ total: finalTotal, email }),
       });
 
       const data = await response.json();
@@ -124,6 +118,67 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
       setIsLoading(false);
     }
   };
+
+  const handlePurchase = async () => {
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
+      toast({
+        title: 'E-mail inválido',
+        description: 'Por favor, insira um endereço de e-mail válido.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (selectedAddons.length === 2) {
+        proceedToCheckout(total);
+    } else if (selectedAddons.length === 1) {
+        setOfferType('one_missing');
+        setIsOfferModalOpen(true);
+    } else { // 0 addons
+        setOfferType('both_missing');
+        setIsOfferModalOpen(true);
+    }
+  };
+
+  const handleAcceptOffer = () => {
+    setIsOfferModalOpen(false);
+    if (offerType === 'both_missing') {
+        const specialOfferTotal = subtotal + 10.90;
+        proceedToCheckout(specialOfferTotal);
+    } else if (offerType === 'one_missing') {
+        const missingAddon = addons.find(a => !selectedAddons.includes(a.id))!;
+        const specialOfferTotal = total + (missingAddon.price / 2);
+        proceedToCheckout(specialOfferTotal);
+    }
+  };
+
+  const handleDeclineOffer = () => {
+    setIsOfferModalOpen(false);
+    proceedToCheckout(total);
+  }
+
+  let offerTitle = '';
+  let offerDescription: React.ReactNode = null;
+
+  if (offerType === 'both_missing') {
+      offerTitle = 'Oferta Especial!';
+      offerDescription = (
+          <p>
+              Vimos que você não adicionou nenhum dos livros extras. Leve <b>ambos</b> por um preço especial de apenas <b>{formatCurrency(10.90)}</b>!
+          </p>
+      );
+  } else if (offerType === 'one_missing') {
+      const missingAddon = addons.find(a => !selectedAddons.includes(a.id));
+      if (missingAddon) {
+          const offerPrice = missingAddon.price / 2;
+          offerTitle = 'Espere, uma última oferta!';
+          offerDescription = (
+              <p>
+                  Adicione "<i>{missingAddon.title}</i>" ao seu pedido por apenas <b>{formatCurrency(offerPrice)}</b> (50% de desconto)!
+              </p>
+          );
+      }
+  }
 
   return (
     <>
@@ -347,6 +402,14 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
         </p>
       </div>
     </Card>
+    <OfferModal
+        isOpen={isOfferModalOpen}
+        onOpenChange={setIsOfferModalOpen}
+        onAccept={handleAcceptOffer}
+        onDecline={handleDeclineOffer}
+        title={offerTitle}
+        description={offerDescription}
+      />
     <PixModal isOpen={isPixModalOpen} onClose={() => setIsPixModalOpen(false)} pixData={pixData} />
     </>
   );
