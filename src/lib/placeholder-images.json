@@ -1,3 +1,28 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "logo",
+      "description": "Edições Helena logo",
+      "imageUrl": "https://picsum.photos/seed/logo1/40/40",
+      "imageHint": "logo book"
+    },
+    {
+      "id": "book-cover",
+      "description": "Cover of the book Cartas para Helena",
+      "imageUrl": "https://picsum.photos/seed/bookcover1/768/1024",
+      "imageHint": "book cover"
+    },
+    {
+      "id": "addon-jardim",
+      "description": "Cover of the book O Jardim que Helena Plantou",
+      "imageUrl": "https://picsum.photos/seed/jardim/56/75",
+      "imageHint": "book cover garden"
+    },
+    {
+      "id": "addon-receitas",
+      "description": "Cover of the book Receitas de Domingo",
+      "imageUrl": "https://picsum.photos/seed/receitas/56/75",
+      "imageHint": "recipe book"
+    }
+  ]
 }
