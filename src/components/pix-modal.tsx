@@ -33,23 +33,47 @@ export function PixModal({ isOpen, onClose, pixData }: PixModalProps) {
   const paymentCheckInterval = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (isOpen && pixData?.pix.pix_qr_code && qrCodeRef.current && typeof QRCode !== 'undefined') {
-      qrCodeRef.current.innerHTML = '';
-      new QRCode(qrCodeRef.current, {
-        text: pixData.pix.pix_qr_code,
-        width: 184,
-        height: 184,
-        colorDark: '#000000',
-        colorLight: '#ffffff',
-        correctLevel: QRCode.CorrectLevel.M,
-      });
+    if (!isOpen || !pixData) return;
 
-      startPaymentChecker(pixData.hash);
-    }
+    let qrCodeCreationInterval: NodeJS.Timeout | null = null;
 
+    const tryCreateQrCode = () => {
+      // Check if QRCode library is loaded and ref is available
+      if (typeof QRCode !== 'undefined' && qrCodeRef.current && pixData.pix.pix_qr_code) {
+        // If we have an interval running, clear it
+        if (qrCodeCreationInterval) {
+          clearInterval(qrCodeCreationInterval);
+        }
+
+        // Clear any previous QR code
+        qrCodeRef.current.innerHTML = '';
+        
+        // Create new QR code
+        new QRCode(qrCodeRef.current, {
+          text: pixData.pix.pix_qr_code,
+          width: 184,
+          height: 184,
+          colorDark: '#000000',
+          colorLight: '#ffffff',
+          correctLevel: QRCode.CorrectLevel.M,
+        });
+      }
+    };
+
+    // Start checking for payment status
+    startPaymentChecker(pixData.hash);
+
+    // Try to create QR code immediately. If it fails, set an interval to retry.
+    tryCreateQrCode();
+    qrCodeCreationInterval = setInterval(tryCreateQrCode, 200);
+
+    // Cleanup function
     return () => {
       if (paymentCheckInterval.current) {
         clearInterval(paymentCheckInterval.current);
+      }
+      if (qrCodeCreationInterval) {
+        clearInterval(qrCodeCreationInterval);
       }
     };
   }, [isOpen, pixData]);
