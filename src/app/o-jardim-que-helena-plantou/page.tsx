@@ -1,10 +1,12 @@
 'use client';
 
 import { ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 
 export default function BookPage() {
+  const router = useRouter();
+
   return (
     <div className="bg-background min-h-screen font-serif text-foreground">
       <style jsx global>{`
@@ -42,10 +44,8 @@ export default function BookPage() {
               por Joaquim Vieira
             </p>
           </div>
-          <Button variant="outline" size="sm" asChild>
-            <Link href="/">
-              <ArrowLeft className="mr-2 h-4 w-4" /> Voltar à Loja
-            </Link>
+          <Button variant="outline" size="sm" onClick={() => router.back()}>
+            <ArrowLeft className="mr-2 h-4 w-4" /> Voltar aos Livros
           </Button>
         </div>
       </header>
@@ -90,10 +90,8 @@ export default function BookPage() {
 
       <footer className="border-t border-border mt-12">
         <div className="mx-auto max-w-3xl px-6 py-8 text-center">
-          <Button variant="outline" asChild>
-            <Link href="/">
-              <ArrowLeft className="mr-2 h-4 w-4" /> Voltar à Loja
-            </Link>
+          <Button variant="outline" onClick={() => router.back()}>
+            <ArrowLeft className="mr-2 h-4 w-4" /> Voltar aos Livros
           </Button>
           <p className="text-xs text-muted-foreground mt-6">
             © {new Date().getFullYear()} Edições Helena
