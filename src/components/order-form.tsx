@@ -74,7 +74,7 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
   return (
     <Card className="rounded-sm border-border bg-card p-8 shadow-sm">
       <div className="flex items-baseline justify-between">
-        <h2 className="font-headline text-2xl text-foreground">
+        <h2 className="font-serif text-2xl text-ink">
           Finalize seu pedido
         </h2>
         <span className="text-xs uppercase tracking-[0.25em] text-muted-foreground">
@@ -106,7 +106,7 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
                 <div className="flex items-center gap-3">
                   <RadioGroupItem value={edition.id} id={edition.id} />
                   <div>
-                    <p className="font-headline text-base text-foreground">
+                    <p className="font-serif text-base text-ink">
                       {edition.title}
                     </p>
                     <p className="text-xs text-muted-foreground">
@@ -114,7 +114,7 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
                     </p>
                   </div>
                 </div>
-                <span className="font-headline text-base text-foreground">
+                <span className="font-serif text-base text-ink">
                   {formatCurrency(edition.price)}
                 </span>
               </Label>
@@ -135,9 +135,9 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
               onClick={() => setQuantity((q) => Math.max(1, q - 1))}
               disabled={quantity <= 1}
             >
-              <Minus className="h-4 w-4" />
+              <Minus className="h-4 w-4" strokeWidth={2}/>
             </Button>
-            <span className="w-10 text-center font-headline text-lg">
+            <span className="w-10 text-center font-serif text-lg">
               {quantity}
             </span>
             <Button
@@ -147,7 +147,7 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
               aria-label="Aumentar quantidade"
               onClick={() => setQuantity((q) => q + 1)}
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="h-4 w-4" strokeWidth={2}/>
             </Button>
           </div>
         </div>
@@ -200,7 +200,7 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
                   />
                 )}
                 <div className="min-w-0 flex-1">
-                  <p className="font-headline text-sm leading-tight text-foreground">
+                  <p className="font-serif text-sm leading-tight text-ink">
                     {addon.title}
                   </p>
                   <p className="text-xs italic text-muted-foreground">
@@ -210,7 +210,7 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
                     {addon.description}
                   </p>
                   <div className="mt-1 flex items-baseline gap-2">
-                    <span className="font-headline text-sm font-semibold text-accent">
+                    <span className="font-serif text-sm font-semibold text-accent">
                       {formatCurrency(addon.price)}
                     </span>
                     <span className="text-xs text-muted-foreground line-through">
@@ -261,8 +261,8 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
             </div>
           )}
           <div className="flex items-baseline justify-between pt-3">
-            <span className="font-headline text-lg text-foreground">Total</span>
-            <span className="font-headline text-2xl text-foreground">
+            <span className="font-serif text-lg text-ink">Total</span>
+            <span className="font-serif text-2xl text-ink">
               {formatCurrency(total)}
             </span>
           </div>
@@ -273,9 +273,9 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
 
         <Button
           size="lg"
-          className="h-auto w-full rounded-sm py-3 font-headline text-base tracking-wide"
+          className="h-auto w-full rounded-sm py-3 font-serif text-base tracking-wide"
         >
-          <Lock className="mr-2 h-4 w-4" /> Comprar agora
+          <Lock className="mr-2 h-4 w-4" strokeWidth={2} /> Comprar agora
         </Button>
         <p className="text-center text-xs text-muted-foreground">
           Pagamento seguro via PIX · Aprovação imediata

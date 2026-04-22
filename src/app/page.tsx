@@ -2,7 +2,6 @@ import Image from 'next/image';
 import { Download, Heart, Quote, ShieldCheck } from 'lucide-react';
 
 import { OrderForm } from '@/components/order-form';
-import { LetterGenerator } from '@/components/letter-generator';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function Home() {
@@ -64,7 +63,7 @@ export default function Home() {
                 data-ai-hint={logo.imageHint}
               />
             )}
-            <span className="font-headline text-lg tracking-wide">
+            <span className="font-serif text-lg tracking-wide">
               Edições Helena
             </span>
           </div>
@@ -80,10 +79,10 @@ export default function Home() {
             <p className="text-xs uppercase tracking-[0.4em] text-accent">
               Romance memorialístico
             </p>
-            <h1 className="font-headline text-5xl leading-[1.05] text-foreground md:text-6xl">
+            <h1 className="font-serif text-5xl leading-[1.05] text-ink md:text-6xl">
               Cartas para Helena
             </h1>
-            <p className="font-headline text-xl italic text-muted-foreground">
+            <p className="font-serif text-xl italic text-muted-foreground">
               memórias de um amor que não termina
             </p>
             <p className="text-sm uppercase tracking-[0.3em] text-foreground/70">
@@ -91,7 +90,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="relative mx-auto aspect-[3/4] w-full max-w-md overflow-hidden rounded-sm shadow-xl">
+          <div className="relative mx-auto aspect-[3/4] w-full max-w-md overflow-hidden rounded-sm shadow-xl" style={{boxShadow: 'var(--shadow-book)'}}>
             {bookCover && (
               <Image
                 src={bookCover.imageUrl}
@@ -107,8 +106,8 @@ export default function Home() {
           </div>
 
           <figure className="border-l-2 border-accent/60 pl-6">
-            <Quote className="mb-3 h-5 w-5 text-accent" aria-hidden="true" />
-            <blockquote className="font-headline text-xl italic leading-relaxed text-foreground">
+            <Quote className="mb-3 h-5 w-5 text-accent" aria-hidden="true" strokeWidth={1.5} />
+            <blockquote className="font-serif text-xl italic leading-relaxed text-ink">
               “Aprendi tarde que o amor não cabe num adeus. Por isso escrevo —
               porque há coisas que só o papel ainda escuta.”
             </blockquote>
@@ -126,7 +125,7 @@ export default function Home() {
               de balanço que ainda parecia se mover sozinha.
             </p>
             <p>
-              <span className="font-headline italic">Cartas para Helena</span> é
+              <span className="font-serif italic">Cartas para Helena</span> é
               um livro escrito devagar, à mão, com a paciência de quem sabe que
               a saudade não tem pressa. Uma obra sobre envelhecer amando, sobre
               o luto que se transforma em gratidão, e sobre o silêncio luminoso
@@ -143,6 +142,7 @@ export default function Home() {
               <Download
                 className="mt-0.5 h-5 w-5 text-accent"
                 aria-hidden="true"
+                strokeWidth={1.5}
               />
               <div>
                 <p className="text-sm font-medium">Acesso imediato</p>
@@ -153,6 +153,7 @@ export default function Home() {
               <ShieldCheck
                 className="mt-0.5 h-5 w-5 text-accent"
                 aria-hidden="true"
+                strokeWidth={1.5}
               />
               <div>
                 <p className="text-sm font-medium">Garantia de 7 dias</p>
@@ -165,6 +166,7 @@ export default function Home() {
               <Heart
                 className="mt-0.5 h-5 w-5 text-accent"
                 aria-hidden="true"
+                strokeWidth={1.5}
               />
               <div>
                 <p className="text-sm font-medium">Edição independente</p>
@@ -172,13 +174,11 @@ export default function Home() {
               </div>
             </div>
           </div>
-
-          <LetterGenerator />
         </div>
 
         <aside className="lg:sticky lg:top-8 lg:self-start">
           <OrderForm editions={editions} addons={addons} />
-          <p className="mt-6 text-center font-headline text-sm italic text-muted-foreground">
+          <p className="mt-6 text-center font-serif text-sm italic text-muted-foreground">
             “um livro para ler devagar, com chá ao lado.”
           </p>
         </aside>
