@@ -61,7 +61,7 @@ export default function ThankYouPage() {
       subtitle: 'memórias de um amor que não termina',
       image: bookCover,
       downloads: [
-        { format: 'Ler Agora', icon: Book, href: '/cartas-para-helena.html' },
+        { format: 'Ler Agora', icon: Book, href: '/cartas-para-helena' },
       ],
       extras: 'Inclui 12 cartas inéditas',
     },
@@ -71,7 +71,7 @@ export default function ThankYouPage() {
       subtitle: 'memórias de um amor que não termina',
       image: bookCover,
       downloads: [
-        { format: 'Ler Agora', icon: Book, href: '/cartas-para-helena.html' },
+        { format: 'Ler Agora', icon: Book, href: '/cartas-para-helena' },
       ],
     },
     {
