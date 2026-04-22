@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Dialog,
   DialogContent,
@@ -31,6 +32,7 @@ export function PixModal({ isOpen, onClose, pixData }: PixModalProps) {
   const qrCodeRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const paymentCheckInterval = useRef<NodeJS.Timeout | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     if (!isOpen || !pixData) return;
@@ -84,10 +86,10 @@ export function PixModal({ isOpen, onClose, pixData }: PixModalProps) {
     }
     toast({
       title: `Pagamento Aprovado!${isSimulation ? ' (Simulação)' : ''}`,
-      description: "Obrigado pela sua compra. Enviamos o acesso para o seu e-mail.",
+      description: "Obrigado pela sua compra. Redirecionando...",
       variant: "default",
     });
-    onClose();
+    router.push('/thank-you');
   };
 
   const startPaymentChecker = (hash: string) => {
