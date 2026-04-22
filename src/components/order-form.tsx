@@ -43,6 +43,8 @@ type PixData = {
       pix_qr_code: string;
     };
     amount_paid: number;
+    purchasedItems: string[];
+    email: string;
 };
 
 export function OrderForm({ editions, addons }: OrderFormProps) {
@@ -90,7 +92,7 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
 
   const total = subtotal + addonsTotal;
 
-  const proceedToCheckout = async (finalTotal: number) => {
+  const proceedToCheckout = async (finalTotal: number, items: string[]) => {
     setIsLoading(true);
     try {
       const response = await fetch('/api/checkout', {
@@ -105,7 +107,7 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
         throw new Error(data.error || 'Não foi possível gerar o pagamento.');
       }
       
-      setPixData(data);
+      setPixData({ ...data, purchasedItems: items, email });
       setIsPixModalOpen(true);
 
     } catch (error) {
@@ -130,8 +132,9 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
       return;
     }
 
+    const items = [selectedEdition, ...selectedAddons];
     if (selectedAddons.length === 2) {
-        proceedToCheckout(total);
+        proceedToCheckout(total, items);
     } else if (selectedAddons.length === 1) {
         setOfferType('one_missing');
         setIsOfferModalOpen(true);
@@ -143,10 +146,12 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
 
   const handleAcceptOffer = () => {
     setIsOfferModalOpen(false);
+    
     if (offerType === 'one_missing') {
         const missingAddon = addons.find(a => !selectedAddons.includes(a.id))!;
         const specialOfferTotal = total + (missingAddon.price / 2);
-        proceedToCheckout(specialOfferTotal);
+        const finalItems = [selectedEdition, ...selectedAddons, missingAddon.id];
+        proceedToCheckout(specialOfferTotal, finalItems);
     } else if (offerType === 'both_missing') {
         const addonJardim = addons.find(a => a.id === 'jardim')!;
         const addonReceitas = addons.find(a => a.id === 'receitas')!;
@@ -158,20 +163,26 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
         };
 
         let finalTotal = subtotal;
+        const finalItems = [selectedEdition, ...selectedAddons];
+
         if (specialOfferSelection === 'both') {
             finalTotal += offerPrices.both;
+            finalItems.push('jardim', 'receitas');
         } else if (specialOfferSelection === 'jardim') {
             finalTotal += offerPrices.jardim;
+            finalItems.push('jardim');
         } else if (specialOfferSelection === 'receitas') {
             finalTotal += offerPrices.receitas;
+            finalItems.push('receitas');
         }
-        proceedToCheckout(finalTotal);
+        proceedToCheckout(finalTotal, finalItems);
     }
   };
 
   const handleDeclineOffer = () => {
     setIsOfferModalOpen(false);
-    proceedToCheckout(total);
+    const items = [selectedEdition, ...selectedAddons];
+    proceedToCheckout(total, items);
   }
 
   let offerTitle = '';
@@ -214,16 +225,16 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
                     </div>
                     <p className="text-xs text-muted-foreground">"O Jardim que Helena Plantou" + "Receitas de Domingo".</p>
                     <div className="flex items-start justify-center gap-4 py-3">
-                        <Image src={addonJardim.image!.imageUrl} alt={addonJardim.title} width={60} height={80} className="rounded-sm shadow-md" />
+                        {addonJardim.image && <Image src={addonJardim.image.imageUrl} alt={addonJardim.title} width={60} height={80} className="rounded-sm shadow-md" />}
                         <Plus className="mt-8 h-4 w-4 shrink-0 text-muted-foreground" />
-                        <Image src={addonReceitas.image!.imageUrl} alt={addonReceitas.title} width={60} height={80} className="rounded-sm shadow-md" />
+                        {addonReceitas.image && <Image src={addonReceitas.image.imageUrl} alt={addonReceitas.title} width={60} height={80} className="rounded-sm shadow-md" />}
                     </div>
                 </div>
             </Label>
 
             <Label htmlFor="offer-jardim" className={cn('flex cursor-pointer items-center gap-4 rounded-md border p-4 transition-colors', specialOfferSelection === 'jardim' && 'border-accent bg-accent/5')}>
                 <RadioGroupItem value="jardim" id="offer-jardim" />
-                <Image src={addonJardim.image!.imageUrl} alt={addonJardim.title} width={42} height={56} className="rounded-sm" />
+                {addonJardim.image && <Image src={addonJardim.image.imageUrl} alt={addonJardim.title} width={42} height={56} className="rounded-sm" />}
                 <div className="flex-1">
                     <div className="flex justify-between font-semibold text-foreground">
                         <span>{addonJardim.title}</span>
@@ -238,7 +249,7 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
 
             <Label htmlFor="offer-receitas" className={cn('flex cursor-pointer items-center gap-4 rounded-md border p-4 transition-colors', specialOfferSelection === 'receitas' && 'border-accent bg-accent/5')}>
                 <RadioGroupItem value="receitas" id="offer-receitas"/>
-                <Image src={addonReceitas.image!.imageUrl} alt={addonReceitas.title} width={42} height={56} className="rounded-sm" />
+                {addonReceitas.image && <Image src={addonReceitas.image.imageUrl} alt={addonReceitas.title} width={42} height={56} className="rounded-sm" />}
                  <div className="flex-1">
                     <div className="flex justify-between font-semibold text-foreground">
                         <span>{addonReceitas.title}</span>

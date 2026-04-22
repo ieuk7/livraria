@@ -25,6 +25,8 @@ type PixModalProps = {
       pix_qr_code: string;
     };
     amount_paid: number;
+    purchasedItems: string[];
+    email: string;
   } | null;
 };
 
@@ -89,7 +91,23 @@ export function PixModal({ isOpen, onClose, pixData }: PixModalProps) {
       description: "Obrigado pela sua compra. Redirecionando...",
       variant: "default",
     });
-    router.push('/thank-you');
+
+    const purchasedItems = pixData?.purchasedItems || [];
+    const email = pixData?.email || '';
+    const hasAllAddons = purchasedItems.includes('jardim') && purchasedItems.includes('receitas');
+    
+    let url = '/thank-you';
+    const params = new URLSearchParams();
+    params.set('purchased', purchasedItems.join(','));
+    if(email) params.set('email', email);
+    
+    if (!hasAllAddons) {
+        params.set('upsell', 'true');
+    }
+
+    url = `${url}?${params.toString()}`;
+
+    router.push(url);
   };
 
   const startPaymentChecker = (hash: string) => {

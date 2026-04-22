@@ -41,6 +41,7 @@ export default function ThankYouPage() {
   const searchParams = useSearchParams();
   const purchased = searchParams.get('purchased')?.split(',') || ['ebook'];
   const showUpsell = searchParams.get('upsell') === 'true';
+  const email = searchParams.get('email') || '';
 
   const [displayUpsell, setDisplayUpsell] = useState(showUpsell);
 
@@ -121,7 +122,7 @@ export default function ThankYouPage() {
 
   const upsellAddons = addonsForUpsell.filter(addon => !purchased.includes(addon.id));
   
-  if (displayUpsell && upsellAddons.length > 0) {
+  if (displayUpsell && upsellAddons.length > 0 && email) {
     return (
        <div className="min-h-screen bg-background font-sans text-foreground">
          <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:py-20">
@@ -134,7 +135,12 @@ export default function ThankYouPage() {
                 </p>
             </div>
             <div className="mt-12">
-                 <OrderForm addons={upsellAddons} onDecline={() => setDisplayUpsell(false)} />
+                 <OrderForm 
+                    addons={upsellAddons} 
+                    onDecline={() => setDisplayUpsell(false)}
+                    email={email}
+                    purchasedItems={purchased}
+                 />
             </div>
               <div className="text-center mt-8">
                 <Button variant="link" onClick={() => setDisplayUpsell(false)}>
