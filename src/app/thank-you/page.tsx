@@ -1,6 +1,10 @@
+'use client';
+
 import Image from 'next/image';
-import { Download, Book, FileText, Home } from 'lucide-react';
+import { Book, FileText, Home } from 'lucide-react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState, useMemo } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -10,8 +14,36 @@ import {
 } from '@/components/ui/card';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Separator } from '@/components/ui/separator';
+import { OrderForm } from '@/components/order-form-post-purchase';
+
+type Edition = {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+};
+
+type Addon = {
+    id: string;
+    title: string;
+    subtitle: string;
+    description: string;
+    price: number;
+    originalPrice: number;
+    image?: {
+        imageUrl: string;
+        description: string;
+        imageHint: string;
+    };
+};
 
 export default function ThankYouPage() {
+  const searchParams = useSearchParams();
+  const purchased = searchParams.get('purchased')?.split(',') || ['ebook'];
+  const showUpsell = searchParams.get('upsell') === 'true';
+
+  const [displayUpsell, setDisplayUpsell] = useState(showUpsell);
+
   const logo = PlaceHolderImages.find((img) => img.id === 'logo');
   const bookCover = PlaceHolderImages.find((img) => img.id === 'book-cover');
   const addonJardim = PlaceHolderImages.find(
@@ -21,32 +53,99 @@ export default function ThankYouPage() {
     (img) => img.id === 'addon-receitas'
   );
 
-  // Nota: Atualmente, todos os produtos são exibidos.
-  // Isso deve ser tornado dinâmico com base na compra real do cliente.
-  const purchasedItems = [
+  const allItems = useMemo(() => [
     {
+      id: 'ebook-cartas',
       title: 'Cartas para Helena',
       subtitle: 'memórias de um amor que não termina',
       image: bookCover,
       downloads: [
-        { format: 'PDF', icon: FileText, href: '#' },
-        { format: 'ePub', icon: Book, href: '#' },
+        { format: 'Ler Agora', icon: Book, href: '/cartas-para-helena.html' },
       ],
       extras: 'Inclui 12 cartas inéditas',
     },
+     {
+      id: 'ebook',
+      title: 'Cartas para Helena',
+      subtitle: 'memórias de um amor que não termina',
+      image: bookCover,
+      downloads: [
+        { format: 'Ler Agora', icon: Book, href: '/cartas-para-helena.html' },
+      ],
+    },
     {
+      id: 'jardim',
       title: 'O Jardim que Helena Plantou',
       subtitle: 'contos de uma vida em flor',
       image: addonJardim,
       downloads: [{ format: 'PDF', icon: FileText, href: '#' }],
     },
     {
+      id: 'receitas',
       title: 'Receitas de Domingo',
       subtitle: 'a mesa da nossa casa',
       image: addonReceitas,
       downloads: [{ format: 'PDF', icon: FileText, href: '#' }],
     },
-  ];
+  ], [bookCover, addonJardim, addonReceitas]);
+
+  const purchasedItems = useMemo(() => {
+    return allItems.filter(item => purchased.includes(item.id));
+  }, [allItems, purchased]);
+  
+  const addonsForUpsell = useMemo(() => ([
+    {
+      id: 'jardim',
+      title: 'O Jardim que Helena Plantou',
+      subtitle: 'contos de uma vida em flor',
+      description:
+        'Do mesmo autor. Adicione por R$ 12,90 — 50% OFF só nesta página.',
+      price: 12.9,
+      originalPrice: 24.9,
+      image: addonJardim,
+    },
+    {
+      id: 'receitas',
+      title: 'Receitas de Domingo',
+      subtitle: 'a mesa da nossa casa',
+      description:
+        'Do mesmo autor. As receitas de Helena, contadas com afeto. Inclua por R$ 9,90.',
+      price: 9.9,
+      originalPrice: 19.9,
+      image: addonReceitas,
+    },
+  ]), [addonJardim, addonReceitas]);
+
+  const hasJardim = purchased.includes('jardim');
+  const hasReceitas = purchased.includes('receitas');
+
+  const upsellAddons = addonsForUpsell.filter(addon => !purchased.includes(addon.id));
+  
+  if (displayUpsell && upsellAddons.length > 0) {
+    return (
+       <div className="min-h-screen bg-background font-sans text-foreground">
+         <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:py-20">
+            <div className="text-center">
+                <h1 className="font-serif text-4xl text-ink md:text-5xl">
+                    Espere! Uma oferta final...
+                </h1>
+                 <p className="mt-4 text-lg text-muted-foreground">
+                    Sua compra foi aprovada, mas vimos que você pode gostar destes outros títulos do mesmo autor.
+                </p>
+            </div>
+            <div className="mt-12">
+                 <OrderForm addons={upsellAddons} onDecline={() => setDisplayUpsell(false)} />
+            </div>
+              <div className="text-center mt-8">
+                <Button variant="link" onClick={() => setDisplayUpsell(false)}>
+                    Não, obrigado. Ir para minha compra.
+                </Button>
+            </div>
+         </main>
+       </div>
+    );
+  }
+
 
   return (
     <div className="min-h-screen bg-muted/30 font-sans text-foreground">
@@ -123,12 +222,12 @@ export default function ThankYouPage() {
                 <Separator className="my-4" />
 
                 <p className="mb-3 text-sm font-medium text-muted-foreground">
-                  Baixar sua cópia:
+                  Acesse sua cópia:
                 </p>
                 <div className="flex flex-col gap-3 sm:flex-row">
                   {item.downloads.map((download) => (
                     <Button key={download.format} asChild>
-                      <Link href={download.href}>
+                      <Link href={download.href} target={download.href.startsWith('/') ? "_blank" : undefined}>
                         <download.icon className="mr-2 h-4 w-4" />
                         {download.format}
                       </Link>
