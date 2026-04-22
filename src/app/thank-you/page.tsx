@@ -79,14 +79,14 @@ export default function ThankYouPage() {
       title: 'O Jardim que Helena Plantou',
       subtitle: 'contos de uma vida em flor',
       image: addonJardim,
-      downloads: [{ format: 'PDF', icon: FileText, href: '#' }],
+      downloads: [{ format: 'Ler Agora', icon: Book, href: '/o-jardim-que-helena-plantou' }],
     },
     {
       id: 'receitas',
       title: 'Receitas de Domingo',
       subtitle: 'a mesa da nossa casa',
       image: addonReceitas,
-      downloads: [{ format: 'PDF', icon: FileText, href: '#' }],
+      downloads: [{ format: 'Ler Agora', icon: Book, href: '/receitas-de-domingo' }],
     },
   ], [bookCover, addonJardim, addonReceitas]);
 
