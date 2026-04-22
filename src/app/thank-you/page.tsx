@@ -210,21 +210,21 @@ export default function ThankYouPage() {
           </p>
         </div>
 
-        <Card className="my-12 p-6 text-center">
+        <Card className="my-12 border-accent bg-accent/5 p-6 text-center">
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
                 <LinkIcon className="h-6 w-6 text-primary" />
             </div>
-            <h2 className="text-lg font-semibold text-ink">Seu link de acesso permanente</h2>
+            <h2 className="text-lg font-bold text-ink">IMPORTANTE: Salve seu acesso</h2>
             <p className="mt-1 text-sm text-muted-foreground">
-                Salve este link para acessar seus livros a qualquer momento.
+                Copie e guarde o link abaixo. É o seu acesso permanente para todos os livros que você comprou.
             </p>
             <div className="mt-4 flex items-center gap-2">
                 <Input
                     readOnly
                     value={accessUrl}
-                    className="text-xs text-muted-foreground"
+                    className="text-xs text-muted-foreground bg-background"
                 />
-                <Button variant="outline" size="icon" onClick={copyToClipboard} aria-label="Copiar link">
+                <Button variant="default" size="icon" onClick={copyToClipboard} aria-label="Copiar link">
                     <Copy className="h-4 w-4" />
                 </Button>
             </div>
