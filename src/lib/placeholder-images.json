@@ -3,25 +3,25 @@
     {
       "id": "logo",
       "description": "Edições Helena logo",
-      "imageUrl": "https://picsum.photos/seed/logo3/40/40",
+      "imageUrl": "https://s3.typebotstorage.com/public/workspaces/clo2dg2hi0041mj0fephb5rrf/typebots/cmoag4gon000704lastl1gbnq/blocks/q94q8egxt1vj1no3xrg9u6oc?v=1776886827916",
       "imageHint": "logo book"
     },
     {
       "id": "book-cover",
       "description": "Capa do livro Cartas para Helena",
-      "imageUrl": "https://picsum.photos/seed/bookcover3/768/1024",
+      "imageUrl": "https://s3.typebotstorage.com/public/workspaces/clo2dg2hi0041mj0fephb5rrf/typebots/cmoag4gon000704lastl1gbnq/blocks/awjml65yhez9mxuj83h9qlys?v=1776886177548",
       "imageHint": "book cover"
     },
     {
       "id": "addon-jardim",
       "description": "O Jardim que Helena Plantou",
-      "imageUrl": "https://picsum.photos/seed/jardim3/56/75",
+      "imageUrl": "https://s3.typebotstorage.com/public/workspaces/clo2dg2hi0041mj0fephb5rrf/typebots/cmoag4gon000704lastl1gbnq/blocks/jmqlv822jjcttaqe5vitaqnl?v=1776886627023",
       "imageHint": "book garden"
     },
     {
       "id": "addon-receitas",
       "description": "Receitas de Domingo",
-      "imageUrl": "https://picsum.photos/seed/receitas3/56/75",
+      "imageUrl": "https://s3.typebotstorage.com/public/workspaces/clo2dg2hi0041mj0fephb5rrf/typebots/cmoag4gon000704lastl1gbnq/blocks/zrerzlzpiiiatukwe6ohyzoz?v=1776886733517",
       "imageHint": "recipe book"
     }
   ]
