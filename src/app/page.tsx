@@ -49,7 +49,7 @@ export default function Home() {
   ];
 
   return (
-    <main className="min-h-screen bg-background text-foreground">
+    <main className="min-h-screen bg-background font-sans text-foreground">
       <header className="border-b border-border/60">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
           <div className="flex items-center gap-3">
@@ -90,7 +90,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="relative mx-auto aspect-[3/4] w-full max-w-md overflow-hidden rounded-sm shadow-xl" style={{boxShadow: 'var(--shadow-book)'}}>
+          <div className="relative mx-auto aspect-[3/4] w-full max-w-md overflow-hidden rounded-sm" style={{boxShadow: 'var(--shadow-book)'}}>
             {bookCover && (
               <Image
                 src={bookCover.imageUrl}
@@ -187,7 +187,7 @@ export default function Home() {
       <footer className="border-t border-border/60">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-6 py-8 text-xs text-muted-foreground sm:flex-row">
           <span>
-            © {new Date().getFullYear() + 1} Edições Helena · Publicado de forma
+            © {new Date().getFullYear()} Edições Helena · Publicado de forma
             independente
           </span>
           <span className="uppercase tracking-[0.3em]">feito com cuidado</span>

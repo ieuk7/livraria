@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import Image from 'next/image';
-import { Minus, Plus, Check, Lock } from 'lucide-react';
+import { Minus, Plus, Check, Lock, Circle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
@@ -36,7 +36,7 @@ type OrderFormProps = {
 
 export function OrderForm({ editions, addons }: OrderFormProps) {
   const [selectedEdition, setSelectedEdition] = useState<string>(
-    editions[1]?.id || editions[0]?.id
+    editions[0]?.id
   );
   const [quantity, setQuantity] = useState(1);
   const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
@@ -104,7 +104,9 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
                 )}
               >
                 <div className="flex items-center gap-3">
-                  <RadioGroupItem value={edition.id} id={edition.id} />
+                  <RadioGroupItem value={edition.id} id={edition.id} className='shadow-none'>
+                    {selectedEdition === edition.id && <Circle className="h-3.5 w-3.5 fill-primary" />}
+                  </RadioGroupItem>
                   <div>
                     <p className="font-serif text-base text-ink">
                       {edition.title}
@@ -135,7 +137,7 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
               onClick={() => setQuantity((q) => Math.max(1, q - 1))}
               disabled={quantity <= 1}
             >
-              <Minus className="h-4 w-4" strokeWidth={2}/>
+              <Minus className="h-4 w-4" />
             </Button>
             <span className="w-10 text-center font-serif text-lg">
               {quantity}
@@ -147,7 +149,7 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
               aria-label="Aumentar quantidade"
               onClick={() => setQuantity((q) => q + 1)}
             >
-              <Plus className="h-4 w-4" strokeWidth={2}/>
+              <Plus className="h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -170,10 +172,10 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
                 type="button"
                 onClick={() => handleAddonToggle(addon.id)}
                 className={cn(
-                  'flex w-full items-start gap-3 rounded-sm border p-3 text-left transition-all shadow-sm',
+                  'flex w-full items-start gap-3 rounded-sm border p-3 text-left transition-all',
                   isSelected
-                    ? 'border-accent bg-accent/5'
-                    : 'border-border hover:border-border/80'
+                    ? 'border-accent bg-accent/5 shadow-sm'
+                    : 'border-dashed border-border hover:border-accent/60'
                 )}
               >
                 <div
@@ -181,7 +183,7 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
                     'mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-sm border',
                     isSelected
                       ? 'border-accent bg-accent text-accent-foreground'
-                      : 'border-muted-foreground'
+                      : 'border-muted-foreground/40'
                   )}
                 >
                   {isSelected && (
