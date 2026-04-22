@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { Book, Copy, Home, Link as LinkIcon, Lock } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, Suspense } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -17,6 +17,8 @@ import { Separator } from '@/components/ui/separator';
 import { OrderForm } from '@/components/order-form-post-purchase';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
+import { Skeleton } from '@/components/ui/skeleton';
+
 
 type Edition = {
   id: string;
@@ -39,7 +41,7 @@ type Addon = {
     };
 };
 
-export default function ThankYouPage() {
+function ThankYouContent() {
   const searchParams = useSearchParams();
   const purchased = searchParams.get('purchased')?.split(',') || ['ebook'];
   const showUpsell = searchParams.get('upsell') === 'true';
@@ -50,6 +52,8 @@ export default function ThankYouPage() {
   const { toast } = useToast();
 
   useEffect(() => {
+    // This will only run on the client, after initial hydration
+    // which is when window is available.
     setAccessUrl(window.location.href);
   }, []);
 
@@ -390,5 +394,67 @@ export default function ThankYouPage() {
         </div>
       </footer>
     </div>
+  );
+}
+
+function LoadingFallback() {
+    const logo = PlaceHolderImages.find((img) => img.id === 'logo');
+    return (
+        <div className="min-h-screen bg-muted/30 font-sans text-foreground">
+             <header className="border-b border-border/60 bg-background">
+                <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
+                <div className="flex items-center gap-3">
+                    {logo && (
+                    <Link href="/">
+                        <Image
+                        src={logo.imageUrl}
+                        alt={logo.description}
+                        width={40}
+                        height={40}
+                        className="h-10 w-10 object-contain"
+                        />
+                    </Link>
+                    )}
+                    <span className="font-serif text-lg tracking-wide">
+                    Edições Helena
+                    </span>
+                </div>
+                <Button variant="outline" size="sm" asChild>
+                    <Link href="/">
+                    <Home className="mr-2 h-4 w-4" /> Voltar à Loja
+                    </Link>
+                </Button>
+                </div>
+            </header>
+
+             <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:py-20">
+                <div className="text-center">
+                    <Skeleton className="h-12 w-3/4 mx-auto" />
+                    <Skeleton className="h-6 w-1/2 mx-auto mt-4" />
+                </div>
+                
+                <Card className="my-12 p-6 text-center">
+                    <Skeleton className="h-8 w-1/2 mx-auto" />
+                    <Skeleton className="h-4 w-3/4 mx-auto mt-2" />
+                    <div className="mt-4 flex items-center gap-2">
+                        <Skeleton className="h-10 flex-grow" />
+                        <Skeleton className="h-10 w-10" />
+                    </div>
+                </Card>
+
+                <div className="space-y-8">
+                    <Skeleton className="h-48 w-full" />
+                    <Skeleton className="h-48 w-full" />
+                </div>
+            </main>
+        </div>
+    )
+}
+
+export default function ThankYouPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <ThankYouContent />
+    </Suspense>
   );
 }
