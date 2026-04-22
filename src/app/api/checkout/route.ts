@@ -4,6 +4,16 @@ import { NextResponse } from 'next/server';
 const API_TOKEN = 'sk_a689a20c480aee9372486cfc6ed7c349ecd7951ce3129f0236adff9a31ee42c7';
 const PRODUCT_HASH = 'prod_4d047653791aabc8';
 
+// Data for generating customer info
+const cpfs = ['42879052882', '07435993492', '93509642791', '73269352468', '35583648805', '59535423720', '77949412453', '13478710634', '09669560950', '03270618638'];
+const firstNames = ['João', 'Marcos', 'Pedro', 'Lucas', 'Mateus', 'Gabriel', 'Daniel', 'Bruno', 'Maria', 'Ana', 'Juliana', 'Camila', 'Beatriz', 'Larissa', 'Sofia', 'Laura'];
+const lastNames = ['Silva', 'Santos', 'Oliveira', 'Souza', 'Rodrigues', 'Ferreira', 'Alves', 'Pereira', 'Lima', 'Gomes', 'Costa', 'Ribeiro', 'Martins', 'Carvalho'];
+const ddds = ['11', '21', '31', '41', '51', '61', '71', '81', '85', '92', '27', '48'];
+
+function getRandomItem<T>(arr: T[]): T {
+    return arr[Math.floor(Math.random() * arr.length)];
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -14,7 +24,11 @@ export async function POST(request: Request) {
     }
 
     const reference = 'CKO-' + new Date().getTime() + '-' + Math.floor(Math.random() * 100000);
-    const name = email.split('@')[0].replace(/[\._-]/g, ' ').replace(/\d+/g, '').trim();
+    
+    // Generate customer data
+    const name = `${getRandomItem(firstNames)} ${getRandomItem(lastNames)}`;
+    const document = getRandomItem(cpfs);
+    const phone = `${getRandomItem(ddds)}9${Math.floor(10000000 + Math.random() * 90000000)}`;
 
     const payload = {
       amount: Math.round(total * 100), // API expects cents
@@ -24,10 +38,10 @@ export async function POST(request: Request) {
       productHash: PRODUCT_HASH,
       orderbump: [], // Addons are already included in the total price
       customer: {
-        name: name || 'Cliente',
+        name: name,
         email: email,
-        document: '', 
-        phone: '' 
+        document: document,
+        phone: phone
       },
       address: { // Digital product, so dummy address
           "street": "Rua do Produto Digital",
