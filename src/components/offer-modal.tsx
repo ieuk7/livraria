@@ -34,14 +34,14 @@ export function OfferModal({
 }: OfferModalProps) {
   return (
     <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
+      <AlertDialogContent className="text-center sm:max-w-lg">
         <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogTitle className="text-2xl">{title}</AlertDialogTitle>
           <AlertDialogDescription asChild>
-            <div className="mt-2 text-sm text-muted-foreground">{description}</div>
+            <div className="mt-2 text-muted-foreground">{description}</div>
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter className="mt-4">
+        <AlertDialogFooter className="mt-4 sm:justify-center">
           <AlertDialogCancel onClick={onDecline}>{declineText}</AlertDialogCancel>
           <AlertDialogAction onClick={onAccept}>{acceptText}</AlertDialogAction>
         </AlertDialogFooter>

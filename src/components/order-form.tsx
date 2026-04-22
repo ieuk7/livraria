@@ -161,23 +161,80 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
   let offerDescription: React.ReactNode = null;
 
   if (offerType === 'both_missing') {
-      offerTitle = 'Oferta Especial!';
-      offerDescription = (
-          <p>
-              Vimos que você não adicionou nenhum dos livros extras. Leve <b>ambos</b> por um preço especial de apenas <b>{formatCurrency(10.90)}</b>!
-          </p>
-      );
+    offerTitle = 'Oferta Especial!';
+    const addon1 = addons[0];
+    const addon2 = addons[1];
+    offerDescription = (
+      <div className="space-y-4">
+        <p className="text-base">
+          Vimos que você não adicionou nenhum dos livros extras. <br/>Leve <b>ambos</b> por um preço especial de apenas <b>{formatCurrency(10.90)}</b>!
+        </p>
+        <div className="flex items-start justify-center gap-4 py-4">
+          {addon1?.image && (
+            <div className="flex w-32 flex-col items-center gap-2 text-center">
+              <Image
+                src={addon1.image.imageUrl}
+                alt={addon1.title}
+                width={80}
+                height={107}
+                className="rounded-sm shadow-md"
+              />
+              <span className="text-xs font-semibold leading-tight text-foreground">
+                {addon1.title}
+              </span>
+            </div>
+          )}
+          <Plus className="mt-10 h-5 w-5 shrink-0 text-muted-foreground" />
+          {addon2?.image && (
+            <div className="flex w-32 flex-col items-center gap-2 text-center">
+              <Image
+                src={addon2.image.imageUrl}
+                alt={addon2.title}
+                width={80}
+                height={107}
+                className="rounded-sm shadow-md"
+              />
+              <span className="text-xs font-semibold leading-tight text-foreground">
+                {addon2.title}
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+    );
   } else if (offerType === 'one_missing') {
-      const missingAddon = addons.find(a => !selectedAddons.includes(a.id));
-      if (missingAddon) {
-          const offerPrice = missingAddon.price / 2;
-          offerTitle = 'Espere, uma última oferta!';
-          offerDescription = (
-              <p>
-                  Adicione "<i>{missingAddon.title}</i>" ao seu pedido por apenas <b>{formatCurrency(offerPrice)}</b> (50% de desconto)!
-              </p>
-          );
-      }
+    const missingAddon = addons.find((a) => !selectedAddons.includes(a.id));
+    if (missingAddon) {
+      const offerPrice = missingAddon.price / 2;
+      offerTitle = 'Espere, uma última oferta!';
+      offerDescription = (
+        <div className="space-y-4">
+          <p className="text-base">
+            Adicione "<i>{missingAddon.title}</i>" ao seu pedido por apenas{' '}
+            <b>{formatCurrency(offerPrice)}</b> (50% de desconto)!
+          </p>
+          <div className="flex justify-center pt-4">
+            {missingAddon.image && (
+              <div className="flex w-40 flex-col items-center gap-2 text-center">
+                <Image
+                  src={missingAddon.image.imageUrl}
+                  alt={missingAddon.title}
+                  width={100}
+                  height={133}
+                  className="rounded-sm shadow-md"
+                />
+                <span className="text-sm font-semibold leading-tight text-foreground">
+                  {missingAddon.title}
+                </span>
+                <span className="text-xs italic text-muted-foreground">
+                  {missingAddon.subtitle}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
   }
 
   return (
