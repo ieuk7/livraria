@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { Book, Copy, Home, Link as LinkIcon } from 'lucide-react';
+import { Book, Copy, Home, Link as LinkIcon, Lock } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState, useMemo } from 'react';
@@ -126,9 +126,6 @@ export default function ThankYouPage() {
     },
   ]), [addonJardim, addonReceitas]);
 
-  const hasJardim = purchased.includes('jardim');
-  const hasReceitas = purchased.includes('receitas');
-
   const upsellAddons = addonsForUpsell.filter(addon => !purchased.includes(addon.id));
 
   const copyToClipboard = () => {
@@ -140,6 +137,10 @@ export default function ThankYouPage() {
       });
     }
   };
+
+  const mainBookItem = useMemo(() => {
+    return purchasedItems.find(item => item.id.startsWith('ebook'));
+  }, [purchasedItems]);
   
   if (displayUpsell && upsellAddons.length > 0 && email) {
     return (
@@ -150,7 +151,7 @@ export default function ThankYouPage() {
                     Espere! Uma oferta final...
                 </h1>
                  <p className="mt-4 text-lg text-muted-foreground">
-                    Sua compra foi aprovada, mas vimos que você pode gostar destes outros títulos do mesmo autor.
+                    Complete sua coleção com estes outros títulos do mesmo autor.
                 </p>
             </div>
             <div className="mt-12">
@@ -163,7 +164,7 @@ export default function ThankYouPage() {
             </div>
               <div className="text-center mt-8">
                 <Button variant="link" onClick={() => setDisplayUpsell(false)}>
-                    Não, obrigado. Ir para minha compra.
+                    Não, obrigado. Ir para minha biblioteca.
                 </Button>
             </div>
          </main>
@@ -231,53 +232,144 @@ export default function ThankYouPage() {
         </Card>
 
         <div className="space-y-8">
-          {purchasedItems.map((item, index) => (
-            <Card
-              key={index}
-              className="overflow-hidden shadow-sm transition-shadow hover:shadow-md sm:flex"
-            >
-              <div className="relative aspect-[3/4] w-full flex-shrink-0 sm:w-[150px]">
-                {item.image && (
-                  <Image
-                    src={item.image.imageUrl}
-                    alt={item.image.description}
-                    fill
-                    className="object-cover"
-                  />
-                )}
-              </div>
-              <div className="flex-grow p-6">
-                <CardTitle className="font-serif text-2xl text-ink">
-                  {item.title}
-                </CardTitle>
-                <CardDescription className="mt-1 italic">
-                  {item.subtitle}
-                </CardDescription>
+            {mainBookItem && (
+                 <Card
+                    key={mainBookItem.id}
+                    className="overflow-hidden shadow-sm transition-shadow hover:shadow-md sm:flex"
+                 >
+                    <div className="relative aspect-[3/4] w-full flex-shrink-0 sm:w-[150px]">
+                        {mainBookItem.image && (
+                        <Image
+                            src={mainBookItem.image.imageUrl}
+                            alt={mainBookItem.image.description}
+                            fill
+                            className="object-cover"
+                        />
+                        )}
+                    </div>
+                    <div className="flex-grow p-6">
+                        <CardTitle className="font-serif text-2xl text-ink">
+                        {mainBookItem.title}
+                        </CardTitle>
+                        <CardDescription className="mt-1 italic">
+                        {mainBookItem.subtitle}
+                        </CardDescription>
 
-                {item.extras && (
-                  <p className="mt-4 text-sm font-medium text-accent">
-                    {item.extras}
-                  </p>
-                )}
+                        {mainBookItem.extras && (
+                        <p className="mt-4 text-sm font-medium text-accent">
+                            {mainBookItem.extras}
+                        </p>
+                        )}
 
-                <Separator className="my-4" />
+                        <Separator className="my-4" />
 
-                <p className="mb-3 text-sm font-medium text-muted-foreground">
-                  Acesse sua cópia:
-                </p>
-                <div className="flex flex-col gap-3 sm:flex-row">
-                  {item.downloads.map((download) => (
-                    <Button key={download.format} asChild>
-                      <Link href={download.href}>
-                        <download.icon className="mr-2 h-4 w-4" />
-                        {download.format}
-                      </Link>
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            </Card>
-          ))}
+                        <p className="mb-3 text-sm font-medium text-muted-foreground">
+                        Acesse sua cópia:
+                        </p>
+                        <div className="flex flex-col gap-3 sm:flex-row">
+                        {mainBookItem.downloads.map((download) => (
+                            <Button key={download.format} asChild>
+                            <Link href={download.href}>
+                                <download.icon className="mr-2 h-4 w-4" />
+                                {download.format}
+                            </Link>
+                            </Button>
+                        ))}
+                        </div>
+                    </div>
+                </Card>
+            )}
+
+            {addonsForUpsell.map((addon) => {
+                const isPurchased = purchased.includes(addon.id);
+                if (isPurchased) {
+                    const item = allItems.find(i => i.id === addon.id);
+                    if (!item) return null;
+                    return (
+                         <Card key={item.id} className="overflow-hidden shadow-sm transition-shadow hover:shadow-md sm:flex">
+                            <div className="relative aspect-[3/4] w-full flex-shrink-0 sm:w-[150px]">
+                                {item.image && (
+                                <Image
+                                    src={item.image.imageUrl}
+                                    alt={item.image.description}
+                                    fill
+                                    className="object-cover"
+                                />
+                                )}
+                            </div>
+                            <div className="flex-grow p-6">
+                                <CardTitle className="font-serif text-2xl text-ink">
+                                {item.title}
+                                </CardTitle>
+                                <CardDescription className="mt-1 italic">
+                                {item.subtitle}
+                                </CardDescription>
+
+                                {item.extras && (
+                                <p className="mt-4 text-sm font-medium text-accent">
+                                    {item.extras}
+                                </p>
+                                )}
+
+                                <Separator className="my-4" />
+
+                                <p className="mb-3 text-sm font-medium text-muted-foreground">
+                                Acesse sua cópia:
+                                </p>
+                                <div className="flex flex-col gap-3 sm:flex-row">
+                                {item.downloads.map((download) => (
+                                    <Button key={download.format} asChild>
+                                    <Link href={download.href}>
+                                        <download.icon className="mr-2 h-4 w-4" />
+                                        {download.format}
+                                    </Link>
+                                    </Button>
+                                ))}
+                                </div>
+                            </div>
+                        </Card>
+                    );
+                } else {
+                    return (
+                        <Card
+                            key={addon.id}
+                            className="overflow-hidden shadow-sm sm:flex bg-muted/30"
+                        >
+                            <div className="relative aspect-[3/4] w-full flex-shrink-0 sm:w-[150px] opacity-60">
+                                {addon.image && (
+                                <Image
+                                    src={addon.image.imageUrl}
+                                    alt={addon.image.description}
+                                    fill
+                                    className="object-cover"
+                                />
+                                )}
+                                <div className="absolute inset-0 bg-background/40 flex items-center justify-center">
+                                    <Lock className="h-10 w-10 text-foreground/50" />
+                                </div>
+                            </div>
+                            <div className="flex-grow p-6">
+                                <CardTitle className="font-serif text-2xl text-ink/70">
+                                    {addon.title}
+                                </CardTitle>
+                                <CardDescription className="mt-1 italic">
+                                    {addon.subtitle}
+                                </CardDescription>
+                                
+                                <Separator className="my-4" />
+
+                                <p className="mb-3 text-sm font-medium text-muted-foreground">
+                                    Adquira este livro com uma oferta especial.
+                                </p>
+                                <Button onClick={() => setDisplayUpsell(true)}>
+                                    <Lock className="mr-2 h-4 w-4" />
+                                    Desbloquear agora
+                                </Button>
+                            </div>
+                        </Card>
+                    );
+                }
+            })}
         </div>
 
         <div className="mt-16 text-center">
