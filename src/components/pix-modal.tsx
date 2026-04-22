@@ -185,19 +185,6 @@ export function PixModal({ isOpen, onClose, pixData }: PixModalProps) {
         <p className="text-xs text-gray-400 mt-4 leading-tight">
             Após o pagamento, a confirmação será processada automaticamente e você receberá o acesso no e-mail informado.
         </p>
-
-        {process.env.NODE_ENV === 'development' && (
-          <div className="mt-4 border-t pt-4">
-            <p className="text-xs text-center text-muted-foreground mb-2">Apenas para desenvolvimento:</p>
-            <Button
-              variant="secondary"
-              className="w-full"
-              onClick={() => handleSuccessfulPayment(true)}
-            >
-              Simular Pagamento Aprovado
-            </Button>
-          </div>
-        )}
       </DialogContent>
     </Dialog>
   );
