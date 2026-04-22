@@ -57,6 +57,7 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
   const [pixData, setPixData] = useState<PixData | null>(null);
   const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
   const [offerType, setOfferType] = useState<'none' | 'one_missing' | 'both_missing'>('none');
+  const [specialOfferSelection, setSpecialOfferSelection] = useState<'both' | 'jardim' | 'receitas'>('both');
 
   const { toast } = useToast();
 
@@ -142,13 +143,29 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
 
   const handleAcceptOffer = () => {
     setIsOfferModalOpen(false);
-    if (offerType === 'both_missing') {
-        const specialOfferTotal = subtotal + 10.90;
-        proceedToCheckout(specialOfferTotal);
-    } else if (offerType === 'one_missing') {
+    if (offerType === 'one_missing') {
         const missingAddon = addons.find(a => !selectedAddons.includes(a.id))!;
         const specialOfferTotal = total + (missingAddon.price / 2);
         proceedToCheckout(specialOfferTotal);
+    } else if (offerType === 'both_missing') {
+        const addonJardim = addons.find(a => a.id === 'jardim')!;
+        const addonReceitas = addons.find(a => a.id === 'receitas')!;
+
+        const offerPrices = {
+            jardim: addonJardim.price / 2,
+            receitas: addonReceitas.price / 2,
+            both: 10.90
+        };
+
+        let finalTotal = subtotal;
+        if (specialOfferSelection === 'both') {
+            finalTotal += offerPrices.both;
+        } else if (specialOfferSelection === 'jardim') {
+            finalTotal += offerPrices.jardim;
+        } else if (specialOfferSelection === 'receitas') {
+            finalTotal += offerPrices.receitas;
+        }
+        proceedToCheckout(finalTotal);
     }
   };
 
@@ -162,47 +179,82 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
 
   if (offerType === 'both_missing') {
     offerTitle = 'Oferta Especial!';
-    const addon1 = addons[0];
-    const addon2 = addons[1];
-    const specialOfferTotal = subtotal + 10.9;
+    const addonJardim = addons.find(a => a.id === 'jardim')!;
+    const addonReceitas = addons.find(a => a.id === 'receitas')!;
+
+    const offerPrices = {
+        jardim: addonJardim.price / 2,
+        receitas: addonReceitas.price / 2,
+        both: 10.90
+    };
+
+    let offerTotal = subtotal;
+    if (specialOfferSelection === 'both') {
+        offerTotal += offerPrices.both;
+    } else if (specialOfferSelection === 'jardim') {
+        offerTotal += offerPrices.jardim;
+    } else if (specialOfferSelection === 'receitas') {
+        offerTotal += offerPrices.receitas;
+    }
+    
     offerDescription = (
-      <div className="space-y-4">
-        <p className="text-base">
-          Vimos que você não adicionou nenhum dos livros extras do mesmo autor. <br/>Leve <b>ambos</b> por um preço especial de apenas <b>{formatCurrency(10.90)}</b>!
+      <div className="space-y-4 text-left">
+        <p className="text-center text-base text-muted-foreground">
+          Vimos que você não adicionou nenhum dos livros extras do mesmo autor. Que tal aproveitar um desconto exclusivo?
         </p>
-        <div className="flex items-start justify-center gap-4 py-4">
-          {addon1?.image && (
-            <div className="flex w-32 flex-col items-center gap-2 text-center">
-              <Image
-                src={addon1.image.imageUrl}
-                alt={addon1.title}
-                width={80}
-                height={107}
-                className="rounded-sm shadow-md"
-              />
-              <span className="text-xs font-semibold leading-tight text-foreground">
-                {addon1.title}
-              </span>
-            </div>
-          )}
-          <Plus className="mt-10 h-5 w-5 shrink-0 text-muted-foreground" />
-          {addon2?.image && (
-            <div className="flex w-32 flex-col items-center gap-2 text-center">
-              <Image
-                src={addon2.image.imageUrl}
-                alt={addon2.title}
-                width={80}
-                height={107}
-                className="rounded-sm shadow-md"
-              />
-              <span className="text-xs font-semibold leading-tight text-foreground">
-                {addon2.title}
-              </span>
-            </div>
-          )}
-        </div>
-        <p className="text-center text-sm text-muted-foreground">
-            Seu novo total será de <b>{formatCurrency(specialOfferTotal)}</b>.
+        
+        <RadioGroup value={specialOfferSelection} onValueChange={(value) => setSpecialOfferSelection(value as any)} className="space-y-3 pt-2">
+            
+            <Label htmlFor="offer-both" className={cn('flex cursor-pointer items-start gap-4 rounded-md border p-4 transition-colors', specialOfferSelection === 'both' && 'border-accent bg-accent/5')}>
+                <RadioGroupItem value="both" id="offer-both" className="mt-1" />
+                <div className="flex-1">
+                    <div className="flex justify-between font-semibold text-foreground">
+                        <span>Leve os dois livros</span>
+                        <span className='text-accent'>{formatCurrency(offerPrices.both)}</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">"O Jardim que Helena Plantou" + "Receitas de Domingo".</p>
+                    <div className="flex items-start justify-center gap-4 py-3">
+                        <Image src={addonJardim.image!.imageUrl} alt={addonJardim.title} width={60} height={80} className="rounded-sm shadow-md" />
+                        <Plus className="mt-8 h-4 w-4 shrink-0 text-muted-foreground" />
+                        <Image src={addonReceitas.image!.imageUrl} alt={addonReceitas.title} width={60} height={80} className="rounded-sm shadow-md" />
+                    </div>
+                </div>
+            </Label>
+
+            <Label htmlFor="offer-jardim" className={cn('flex cursor-pointer items-center gap-4 rounded-md border p-4 transition-colors', specialOfferSelection === 'jardim' && 'border-accent bg-accent/5')}>
+                <RadioGroupItem value="jardim" id="offer-jardim" />
+                <Image src={addonJardim.image!.imageUrl} alt={addonJardim.title} width={42} height={56} className="rounded-sm" />
+                <div className="flex-1">
+                    <div className="flex justify-between font-semibold text-foreground">
+                        <span>{addonJardim.title}</span>
+                        <div className="text-right">
+                            <p className='text-accent'>{formatCurrency(offerPrices.jardim)}</p>
+                            <p className="text-xs font-normal text-muted-foreground line-through">{formatCurrency(addonJardim.price)}</p>
+                        </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground">Adicione com 50% de desconto.</p>
+                </div>
+            </Label>
+
+            <Label htmlFor="offer-receitas" className={cn('flex cursor-pointer items-center gap-4 rounded-md border p-4 transition-colors', specialOfferSelection === 'receitas' && 'border-accent bg-accent/5')}>
+                <RadioGroupItem value="receitas" id="offer-receitas"/>
+                <Image src={addonReceitas.image!.imageUrl} alt={addonReceitas.title} width={42} height={56} className="rounded-sm" />
+                 <div className="flex-1">
+                    <div className="flex justify-between font-semibold text-foreground">
+                        <span>{addonReceitas.title}</span>
+                         <div className="text-right">
+                            <p className='text-accent'>{formatCurrency(offerPrices.receitas)}</p>
+                            <p className="text-xs font-normal text-muted-foreground line-through">{formatCurrency(addonReceitas.price)}</p>
+                        </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground">Adicione com 50% de desconto.</p>
+                </div>
+            </Label>
+
+        </RadioGroup>
+
+        <p className="text-center text-sm text-muted-foreground pt-2">
+            Seu novo total será de <b>{formatCurrency(offerTotal)}</b>.
         </p>
       </div>
     );
