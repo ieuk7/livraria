@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import Script from 'next/script';
 import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
-import { LovableBadge } from '@/components/lovable-badge';
 
 export const metadata: Metadata = {
   title: 'Cartas para Helena — um livro de Joaquim Vieira',
@@ -45,7 +44,6 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         {children}
         <Toaster />
-        <LovableBadge />
         <Script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js" strategy="afterInteractive" />
       </body>
     </html>
