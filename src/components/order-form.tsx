@@ -164,10 +164,11 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
     offerTitle = 'Oferta Especial!';
     const addon1 = addons[0];
     const addon2 = addons[1];
+    const specialOfferTotal = subtotal + 10.9;
     offerDescription = (
       <div className="space-y-4">
         <p className="text-base">
-          Vimos que você não adicionou nenhum dos livros extras. <br/>Leve <b>ambos</b> por um preço especial de apenas <b>{formatCurrency(10.90)}</b>!
+          Vimos que você não adicionou nenhum dos livros extras do mesmo autor. <br/>Leve <b>ambos</b> por um preço especial de apenas <b>{formatCurrency(10.90)}</b>!
         </p>
         <div className="flex items-start justify-center gap-4 py-4">
           {addon1?.image && (
@@ -200,17 +201,21 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
             </div>
           )}
         </div>
+        <p className="text-center text-sm text-muted-foreground">
+            Seu novo total será de <b>{formatCurrency(specialOfferTotal)}</b>.
+        </p>
       </div>
     );
   } else if (offerType === 'one_missing') {
     const missingAddon = addons.find((a) => !selectedAddons.includes(a.id));
     if (missingAddon) {
       const offerPrice = missingAddon.price / 2;
+      const specialOfferTotal = total + offerPrice;
       offerTitle = 'Espere, uma última oferta!';
       offerDescription = (
         <div className="space-y-4">
           <p className="text-base">
-            Adicione "<i>{missingAddon.title}</i>" ao seu pedido por apenas{' '}
+            Adicione "<i>{missingAddon.title}</i>" do mesmo autor ao seu pedido por apenas{' '}
             <b>{formatCurrency(offerPrice)}</b> (50% de desconto)!
           </p>
           <div className="flex justify-center pt-4">
@@ -232,6 +237,9 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
               </div>
             )}
           </div>
+          <p className="text-center text-sm text-muted-foreground">
+            Seu novo total será de <b>{formatCurrency(specialOfferTotal)}</b>.
+          </p>
         </div>
       );
     }
