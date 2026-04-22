@@ -233,7 +233,7 @@ export default function ThankYouPage() {
                 <div className="flex flex-col gap-3 sm:flex-row">
                   {item.downloads.map((download) => (
                     <Button key={download.format} asChild>
-                      <Link href={download.href} target={download.href.startsWith('/') ? "_blank" : undefined}>
+                      <Link href={download.href}>
                         <download.icon className="mr-2 h-4 w-4" />
                         {download.format}
                       </Link>
