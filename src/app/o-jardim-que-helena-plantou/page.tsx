@@ -41,7 +41,7 @@ export default function BookPage() {
               O Jardim que Helena Plantou
             </h1>
             <p className="text-sm text-muted-foreground italic">
-              por Joaquim Vieira
+              por Lindomar Souza
             </p>
           </div>
           <Button variant="outline" size="sm" onClick={() => router.back()}>

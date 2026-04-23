@@ -399,7 +399,7 @@ export function OrderForm({ editions, addons }: OrderFormProps) {
             Adicione à sua leitura
           </Label>
           <p className="text-xs italic text-muted-foreground">
-            Outras obras de Joaquim Vieira, com desconto exclusivo nesta
+            Outras obras de Lindomar Souza, com desconto exclusivo nesta
             página.
           </p>
           {addons.map((addon) => {

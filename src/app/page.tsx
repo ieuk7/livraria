@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { Download, Heart, Quote, ShieldCheck } from 'lucide-react';
+import { Download, Heart, Quote, ShieldCheck, BadgeCheck } from 'lucide-react';
 
 import { OrderForm } from '@/components/order-form';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
@@ -85,9 +85,26 @@ export default function Home() {
             <p className="font-serif text-xl italic text-muted-foreground">
               memórias de um amor que não termina
             </p>
-            <p className="text-sm uppercase tracking-[0.3em] text-foreground/70">
-              por Joaquim Vieira
-            </p>
+            <div className="relative inline-flex items-center gap-3 pt-4">
+                <Image
+                    src="https://s3.typebotstorage.com/public/workspaces/clo2dg2hi0041mj0fephb5rrf/typebots/cmoag4gon000704lastl1gbnq/blocks/k1tvc5an9l24uo4i5otd4bne?v=1776916773562"
+                    alt="Lindomar Souza"
+                    width={48}
+                    height={48}
+                    className="h-12 w-12 rounded-full object-cover"
+                />
+                <div>
+                    <div className="flex items-center gap-2">
+                    <p className="font-serif text-lg text-ink">
+                        por Lindomar Souza
+                    </p>
+                    <BadgeCheck className="h-5 w-5 text-blue-500" />
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                    Autor com documentos verificados
+                    </p>
+                </div>
+            </div>
           </div>
 
           <div className="relative mx-auto aspect-[3/4] w-full max-w-md overflow-hidden rounded-sm" style={{boxShadow: 'var(--shadow-book)'}}>
