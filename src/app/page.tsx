@@ -91,7 +91,7 @@ export default function Home() {
                     alt="Lindomar Souza"
                     width={48}
                     height={48}
-                    className="h-12 w-12 rounded-full object-cover"
+                    className="h-12 w-12 rounded-full object-cover border-2 border-border/40"
                 />
                 <div>
                     <div className="flex items-center gap-2">
